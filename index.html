@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Be My Valentine?</title>
+
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(135deg, #ffd6e8, #ffeef5);
+      font-family: "Comic Sans MS", Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background: white;
+      padding: 50px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      animation: popIn 1s ease;
+      z-index: 2;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0); }
+      to { transform: scale(1); }
+    }
+
+    h1 { color: #ff4d6d; }
+
+    #subtext {
+      margin-bottom: 30px;
+      font-size: 18px;
+      color: #555;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 14px 30px;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    button:hover { transform: scale(1.1); }
+
+    #yesBtn {
+      background: #ff4d6d;
+      color: white;
+      margin-right: 15px;
+    }
+
+    #noBtn {
+      background: #ccc;
+      position: absolute;
+    }
+
+    #message {
+      margin-top: 25px;
+      font-size: 22px;
+      color: #ff4d6d;
+      display: none;
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: absolute;
+      bottom: -20px;
+      font-size: 24px;
+      animation: floatUp 6s linear infinite;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-120vh); opacity: 0; }
+    }
+
+    /* Tiny YouTube Player (1x1 pixel) */
+    #player {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      width: 1px;
+      height: 1px;
+      opacity: 0.01;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Tiny YouTube Player -->
+  <div id="player"></div>
+
+  <div class="card">
+    <h1>Will you be my Valentine? 💘</h1>
+    <div id="subtext">I promise snacks, laughs, and good vibes 🥰</div>
+
+    <button id="yesBtn">Yes 💖</button>
+    <button id="noBtn">No 😅</button>
+
+    <div id="message"></div>
+  </div>
+
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <script>
+    let player;
+    let musicStarted = false;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '1',
+        width: '1',
+        videoId: '3JbmE3jjCSk',
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          loop: 1,
+          playlist: '3JbmE3jjCSk'
+        }
+      });
+    }
+
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const message = document.getElementById("message");
+    const subtext = document.getElementById("subtext");
+
+    const yesMessages = [
+      "YAY!! 💕 I knew you’d say yes!",
+      "Best Valentine ever 🥰",
+      "This just got official 💘",
+      "You made my heart happy 😍"
+    ];
+
+    const noMessages = [
+      "Waittt 😭",
+      "That’s not an option 😌",
+      "Try again 👀",
+      "The answer is yes btw 💅"
+    ];
+
+    let noIndex = 0;
+
+    noBtn.addEventListener("mouseover", () => {
+      const x = Math.random() * (window.innerWidth - 100);
+      const y = Math.random() * (window.innerHeight - 100);
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+
+      subtext.textContent = noMessages[noIndex % noMessages.length];
+      noIndex++;
+    });
+
+    yesBtn.addEventListener("click", () => {
+      const randomMsg = yesMessages[Math.floor(Math.random() * yesMessages.length)];
+      message.textContent = randomMsg;
+      message.style.display = "block";
+      subtext.style.display = "none";
+      yesBtn.style.display = "none";
+      noBtn.style.display = "none";
+
+      if (player && !musicStarted) {
+        player.playVideo();
+        musicStarted = true;
+      }
+    });
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.textContent = "💖";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = Math.random() * 3 + 4 + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }
+
+    setInterval(createHeart, 400);
+  </script>
+
+</body>
+</html>
